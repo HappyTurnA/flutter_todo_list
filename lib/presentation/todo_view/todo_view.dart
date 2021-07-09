@@ -13,11 +13,25 @@ class TodoView extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: ChangeNotifierProvider<TodoViewModel>(
-        create: (_) => TodoViewModel(),
+        create: (_) => TodoViewModel()..fetchTodos(),
         child: Scaffold(
           body: Consumer<TodoViewModel>(
             builder: (context, model, child) {
-              return Center(child: Text("todo 閲覧"));
+              var todoList = model.todoList;
+              final listTiles = todoList
+                  .map((todo) => ListTile(
+                        leading: IconButton(
+                          icon: Icon(Icons.check_box),
+                          onPressed: () async {
+                            await model.completeTodo(todo);
+                          },
+                        ),
+                        title: Text(todo.title),
+                      ))
+                  .toList();
+              return ListView(
+                children: listTiles,
+              );
             },
           ),
         ),

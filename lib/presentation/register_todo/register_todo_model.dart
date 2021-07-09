@@ -6,8 +6,10 @@ class RegisterTodoModel extends ChangeNotifier {
 
   Future<void> addTodo() async {
     print(taskName);
-    await FirebaseFirestore.instance
-        .collection("todos")
-        .add({'name': this.taskName, 'created_at': Timestamp.now()});
+    await FirebaseFirestore.instance.collection("todos").add({
+      'name': this.taskName,
+      'is_complete': false,
+      'created_at': Timestamp.now()
+    });
   }
 }

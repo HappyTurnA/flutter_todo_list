@@ -17,7 +17,19 @@ class CompleteView extends StatelessWidget {
         child: Scaffold(
           body: Consumer<CompleteViewModel>(
             builder: (context, model, child) {
-              return Center(child: Text("todo 完了"));
+              var todoList = model.todoList;
+              final listTiles = todoList
+                  .map((todo) => ListTile(
+                        leading: IconButton(
+                          icon: Icon(Icons.check_box),
+                          onPressed: () {},
+                        ),
+                        title: Text(todo.title),
+                      ))
+                  .toList();
+              return ListView(
+                children: listTiles,
+              );
             },
           ),
         ),
