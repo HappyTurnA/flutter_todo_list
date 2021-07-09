@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,8 @@ import 'package:todo_list/presentation/todo_view/todo_view.dart';
 import 'main_model.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   // main()の中で非同期処理を行う際には、下記を実行しなければいけないらしい
   WidgetsFlutterBinding.ensureInitialized();
   // iOS,androidともに縦向き固定

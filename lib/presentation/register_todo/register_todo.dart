@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'register_todo_model.dart';
@@ -17,7 +18,40 @@ class RegisterTodo extends StatelessWidget {
         child: Scaffold(
           body: Consumer<RegisterTodoModel>(
             builder: (context, model, child) {
-              return Center(child: Text("todo 登録"));
+              return Center(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 100,
+                    ),
+                    SizedBox(
+                      width: 350,
+                      child: TextField(
+                        decoration: InputDecoration(hintText: "タスク名"),
+                        onChanged: (val) {
+                          model.taskName = val;
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      width: 140,
+                      child: ElevatedButton(
+                          onPressed: () {
+                            model.addTodo();
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.add_task),
+                              Text("登録する"),
+                            ],
+                          )),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
         ),

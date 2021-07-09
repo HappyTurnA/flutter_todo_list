@@ -1,5 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class RegisterTodoModel extends ChangeNotifier {
-  final String message = "Hello World";
+  String taskName = "";
+
+  Future<void> addTodo() async {
+    print(taskName);
+    await FirebaseFirestore.instance
+        .collection("todos")
+        .add({'name': this.taskName, 'created_at': Timestamp.now()});
+  }
 }
