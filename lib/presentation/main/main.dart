@@ -1,16 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_list/presentation/complete_view/complete_view.dart';
+import 'package:todo_list/presentation/register_todo/register_todo.dart';
+import 'package:todo_list/presentation/todo_view/todo_view.dart';
 
 import 'main_model.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  // main()の中で非同期処理を行う際には、下記を実行しなければいけないらしい
+  WidgetsFlutterBinding.ensureInitialized();
+  // iOS,androidともに縦向き固定
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => MainModel()),
+        ],
+        child: MyApp(),
+      ),
+    );
+  });
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  static List<Widget> _pageList = [RegisterTodo(), TodoView(), CompleteView()];
+
   @override
   Widget build(BuildContext context) {
+    final bottomNavBar = Provider.of<MainModel>(context);
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -19,38 +39,28 @@ class MyApp extends StatelessWidget {
       home: ChangeNotifierProvider<MainModel>(
         create: (_) => MainModel(),
         child: Scaffold(
-          appBar: AppBar(
-            title: Text("TODO アプリ"),
-          ),
-          body: Consumer<MainModel>(
-            builder: (context, model, child) {
-              return Text(model.message);
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: bottomNavBar.currentTabIndex,
+            onTap: (int index) {
+              bottomNavBar.currentTabIndex = index;
             },
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.add_task),
+                label: "登録",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.computer),
+                label: "タスク",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.check_box),
+                label: "完了済み",
+              ),
+            ],
           ),
+          body: _pageList[bottomNavBar.currentTabIndex],
         ),
-      ),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Text("Hello World"),
       ),
     );
   }
